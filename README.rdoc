@@ -47,7 +47,6 @@ promises in the string passed to +Pledge.pledge+.
 
 Using an unsupported promise will raise an exception.  The "stdio"
 promise is added automatically, as ruby does not function without
-
 it. 
 
 == Reporting issues/bugs
