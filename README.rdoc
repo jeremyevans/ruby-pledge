@@ -1,0 +1,99 @@
+= pledge
+
+pledge exposes OpenBSD's pledge(2) system call to ruby, allowing a
+program to restrict the types of operations the program
+can do after that point.  Unlike other similar systems,
+pledge is specifically designed for programs that need to
+use a wide variety of operations on initialization, but
+a fewer number after initialization (when user input will
+be accepted).
+
+plege(2) is supported on OpenBSD 5.9+.
+
+== Usage
+
+First, you need to require the library
+
+  require 'pledge'
+
+Then you can use +Pledge.pledge+ as the interface to the pledge(2)
+system call.  You pass +Pledge.pledge+ a string containing tokens
+for the operations you would like to allow (called promises).
+For example, if you want to give the process the ability to read
+from the the file system, but not read from the file system or
+allow network access:
+
+  Pledge.pledge("rpath")
+
+To allow read/write filesystem access, but not network access:
+
+  Pledge.pledge("rpath wpath cpath")
+
+To allow inet/unix socket access and DNS queries, but not
+filesystem access:
+
+  Pledge.pledge("inet unix dns")
+
++Pledge+ is a module that extends itself, you can include it
+in other classes:
+
+  Object.send(:include, Pledge)
+  pledge("rpath")
+
+== Options
+
+See the pledge(2) man page for a description of the allowed
+promises in the string passed to +Pledge.pledge+.
+
+Using an unsupported promise will raise an exception.  The "stdio"
+promise is added automatically, as ruby does not function without
+
+it. 
+
+== Reporting issues/bugs
+
+This library uses GitHub Issues for tracking issues/bugs:
+
+  https://github.com/jeremyevans/ruby-pledge/issues
+
+== Contributing
+
+The source code is on GitHub:
+
+  https://github.com/jeremyevans/ruby-pledge
+
+To get a copy:
+
+  git clone git://github.com/jeremyevans/ruby-pledge.git
+
+== Requirements
+
+* OpenBSD 5.9+
+* ruby 1.8.7+
+* rake-compiler (if compiling)
+
+== Compiling
+
+To build the library from a git checkout, use the compile task.
+
+  rake compile
+
+== Running the specs
+
+The rake spec task runs the specs.  This is also the default rake
+task.  This will compile the library if not already compiled. 
+
+  rake
+
+== Known Issues
+
+* You cannot create new threads after running +Pledge.pledge+, as
+  it uses syscalls that are not currently allowed by pledge(2).  +fork+
+  still works, assuming you are using the +proc+ pledge.
+
+* You cannot currently test +Pledge.pledge+ in irb/pry, as they use an
+  ioctl that is not currently allowed by pledge(2).
+
+== Author
+
+Jeremy Evans <code@jeremyevans.net>
