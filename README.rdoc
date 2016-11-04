@@ -20,7 +20,7 @@ Then you can use +Pledge.pledge+ as the interface to the pledge(2)
 system call.  You pass +Pledge.pledge+ a string containing tokens
 for the operations you would like to allow (called promises).
 For example, if you want to give the process the ability to read
-from the file system, but not read from the file system or
+from the file system, but not write to the file system or
 allow network access:
 
   Pledge.pledge("rpath")
