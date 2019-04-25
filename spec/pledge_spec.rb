@@ -1,12 +1,17 @@
 require './lib/pledge'
 
 require 'rubygems'
+ENV['MT_NO_PLUGINS'] = '1' # Work around stupid autoloading of plugins
 gem 'minitest'
 require 'minitest/autorun'
 
 RUBY = ENV['RUBY'] || 'ruby'
 
 describe "Pledge.pledge" do
+  def execpledged(promises, execpromises, code)
+    system(RUBY, '-I', 'lib', '-r', 'pledge', '-e', "Pledge.pledge(#{promises.inspect}, #{execpromises.inspect}); #{code}")
+  end
+
   def _pledged(status, promises, code)
     system(RUBY, '-I', 'lib', '-r', 'pledge', '-e', "Pledge.pledge(#{promises.inspect}); #{code}").must_equal status
   end
@@ -108,5 +113,26 @@ describe "Pledge.pledge" do
       pledged("UNIXSocket.new('spec/_sock').send('t', 0)", "unix")
     end
     us.accept.read.must_equal 't'
+  end
+
+  it "should raise ArgumentError if given in invalid number of arguments" do
+    proc{Pledge.pledge()}.must_raise ArgumentError
+    proc{Pledge.pledge("", "", "")}.must_raise ArgumentError
+  end
+
+  it "should handle both promises and execpromises arguments" do
+    execpledged("proc exec rpath", "stdio rpath", "exit(`cat MIT-LICENSE` == File.read('MIT-LICENSE') ? 0 : 1)").must_equal true
+    execpledged("proc exec", "stdio rpath", "$stderr.reopen('/dev/null', 'w'); exit(`cat MIT-LICENSE` == File.read('MIT-LICENSE') ? 0 : 1)").must_equal false
+    execpledged("proc exec rpath", "stdio", "$stderr.reopen('/dev/null', 'w'); exit(`cat MIT-LICENSE` == File.read('MIT-LICENSE') ? 0 : 1)").must_equal false
+  end
+
+  it "should handle nil arguments" do
+    Pledge.pledge(nil).must_be_nil
+    Pledge.pledge(nil, nil).must_be_nil
+    execpledged("proc exec rpath", nil, "`cat MIT-LICENSE`").must_equal true
+    execpledged("", nil, "`cat MIT-LICENSE`").must_equal false
+    execpledged(nil, "stdio rpath", "`cat MIT-LICENSE`").must_equal true
+    execpledged(nil, "stdio", "File.read('MIT-LICENSE')").must_equal true
+    execpledged(nil, "stdio", "$stderr.reopen('/dev/null', 'w'); exit(`cat MIT-LICENSE` == File.read('MIT-LICENSE') ? 0 : 1)").must_equal false
   end
 end

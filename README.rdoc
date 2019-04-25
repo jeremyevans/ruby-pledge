@@ -8,7 +8,8 @@ use a wide variety of operations on initialization, but
 a fewer number after initialization (when user input will
 be accepted).
 
-plege(2) is supported on OpenBSD 5.9+.
+pledge(2) is supported on OpenBSD 5.9+. pledge(2) supports a second
+argument for execpromises on OpenBSD 6.3+.
 
 == Usage
 
@@ -34,6 +35,18 @@ filesystem access:
 
   Pledge.pledge("inet unix dns")
 
+If you want to use pledging in a console application such as
+irb or pry, you must include the tty promise:
+
+  Pledge.pledge("tty rpath")
+
+You can pass a second string argument containing tokens for
+the operations you would like to allow in spawned processes
+(called execpromises).  To allow spawning processes that have
+read/write filesystem access only, but not network access:
+
+  Pledge.pledge("proc exec rpath", "stdio rpath wpath cpath")
+
 +Pledge+ is a module that extends itself, you can include it
 in other classes:
 
@@ -43,11 +56,12 @@ in other classes:
 == Options
 
 See the pledge(2) man page for a description of the allowed
-promises in the string passed to +Pledge.pledge+.
+promises in the strings passed to +Pledge.pledge+.
 
 Using an unsupported promise will raise an exception.  The "stdio"
-promise is added automatically, as ruby does not function without
-it. 
+promise is added automatically to the current process's promises,
+as ruby does not function without it, but it is not added to
+the execpromises (as you can execute non-ruby programs).
 
 == Reporting issues/bugs
 
@@ -83,15 +97,6 @@ The rake spec task runs the specs.  This is also the default rake
 task.  This will compile the library if not already compiled. 
 
   rake
-
-== Known Issues
-
-* You cannot create new threads after running +Pledge.pledge+, as
-  it uses syscalls that are not currently allowed by pledge(2).  +fork+
-  still works, assuming you are using the +proc+ pledge.
-
-* You cannot currently test +Pledge.pledge+ in irb/pry, as they use an
-  ioctl that is not currently allowed by pledge(2).
 
 == Author
 
