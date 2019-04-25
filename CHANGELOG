@@ -1,3 +1,7 @@
+=== master
+
+* Add unveil library and Pledge.unveil for access to unveil(2) to control file system access (jeremyevans)
+
 === 1.1.0 (2019-04-25)
 
 * Support execpromises as optional second argument to Pledge.pledge (jeremyevans)

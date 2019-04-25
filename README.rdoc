@@ -1,17 +1,17 @@
 = pledge
 
-pledge exposes OpenBSD's pledge(2) system call to ruby, allowing a
-program to restrict the types of operations the program
-can do after that point.  Unlike other similar systems,
-pledge is specifically designed for programs that need to
-use a wide variety of operations on initialization, but
+pledge exposes OpenBSD's pledge(2) and unveil(2) system
+calls to ruby. pledge(2) allows a program to restrict the
+types of operations the program can do, and unveil(2)
+restricts access to the file system.
+
+Unlike other similar systems, pledge and unveil are
+designed for programs that need to use a wide variety of
+operations and file access on initialization, but
 a fewer number after initialization (when user input will
 be accepted).
 
-pledge(2) is supported on OpenBSD 5.9+. pledge(2) supports a second
-argument for execpromises on OpenBSD 6.3+.
-
-== Usage
+== pledge
 
 First, you need to require the library
 
@@ -53,8 +53,6 @@ in other classes:
   Object.send(:include, Pledge)
   pledge("rpath")
 
-== Options
-
 See the pledge(2) man page for a description of the allowed
 promises in the strings passed to +Pledge.pledge+.
 
@@ -62,6 +60,69 @@ Using an unsupported promise will raise an exception.  The "stdio"
 promise is added automatically to the current process's promises,
 as ruby does not function without it, but it is not added to
 the execpromises (as you can execute non-ruby programs).
+
+== unveil
+
+First, you need to require the library
+
+  require 'unveil'
+
+Then you can use +Pledge.unveil+ as the interface to the unveil(2)
+system call.  You pass +Pledge.unveil+ a hash of paths and permissions,
+for those paths, and it calls unveil(2) with the path and permissions
+for each entry.
+
+The permissions should be a string with the following characters:
+
+r :: Allow read access to existing files and directories
+w :: Allow write access to existing files and directories
+x :: Allow execute access to programs
+c :: Allow create access for new files and directories
+
+You can use the empty string as permissions if you want to allow no access
+to the given path, even if you have granted some access to a folder above
+the given folder.  You can use a value of +:gem+ to allow read access to
+the directory for the gem specified by the key.
+
++Pledge.unveil+ locks the file system access to the specified paths. If
+you want to specify which paths to allow in multiple places in your
+program, use +Pledge.unveil_without_lock+ for the initial calls and
++Pledge.unveil+ for the final call.
+
+If +Pledge.unveil+ is called with an empty hash, it adds an unveil of +/+
+with no permissions, which denies all access to the file system if
++unveil_without_lock+ was not called previously with paths.
+
+Example:
+
+  Pledge.unveil(
+    '/home/foo/bar' => 'r',
+    '/home/foo/bar/data' => 'rwc',
+    '/bin' => 'x',
+    '/home/foo/bar/secret' => '',
+    'rack' => :gem
+  )
+
+The value of :gem is mostly mostly needed if the gem uses autoload or
+other forms of runtime requires.  This allows read access to
+all files in the gem's folder, not just the gem's require paths,
+so it works correctly for gems that access data (e.g. templates)
+outside of the gem's require paths.
+
+If you plan to use pledge and unveil together, you should
+unveil before pledging, unless you use the +unveil+
+promise when pledging.
+
+=== Issues with unveil and File.realpath
+
++Pledge.unveil+ does not work with +File.realpath+ on Ruby <2.7.
+The Ruby ports officially supported by OpenBSD have had support to
+allow them to work together backported, as long as you are running
+OpenBSD 6.6+ (or 6.5-current after July 2019).  As +require+ uses
++File.realpath+, this means in most cases where you would want to
+use the +:gem+ support, it will not actually work correctly unless
+you are using Ruby 2.7+ or an OpenBSD package with the backported
+support.
 
 == Reporting issues/bugs
 
@@ -81,7 +142,7 @@ To get a copy:
 
 == Requirements
 
-* OpenBSD 5.9+
+* OpenBSD 5.9+ (6.4+ for unveil, but 6.6+ recommended)
 * ruby 1.8.7+
 * rake-compiler (if compiling)
 

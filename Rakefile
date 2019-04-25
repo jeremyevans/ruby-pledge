@@ -1,13 +1,7 @@
 require "rake"
 require "rake/clean"
 
-CLEAN.include %w'**.rbc rdoc'
-
-desc "Do a full cleaning"
-task :distclean do
-  CLEAN.include %w'tmp pkg tame*.gem lib/*.so'
-  Rake::Task[:clean].invoke
-end
+CLEAN.include %w'**.rbc rdoc lib/*.so tmp'
 
 desc "Build the gem"
 task :package do
