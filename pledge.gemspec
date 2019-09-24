@@ -20,4 +20,5 @@ systems, pledge and unveil are specifically designed for programs that need to
 use a wide variety of operations on initialization, but a fewer number after
 initialization (when user input will be accepted).
 END
+  s.add_development_dependency "minitest-global_expectations"
 end

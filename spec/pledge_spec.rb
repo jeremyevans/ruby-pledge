@@ -3,7 +3,7 @@ require './lib/pledge'
 require 'rubygems'
 ENV['MT_NO_PLUGINS'] = '1' # Work around stupid autoloading of plugins
 gem 'minitest'
-require 'minitest/autorun'
+require 'minitest/global_expectations/autorun'
 
 RUBY = ENV['RUBY'] || 'ruby'
 
