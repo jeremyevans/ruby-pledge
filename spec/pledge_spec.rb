@@ -73,8 +73,8 @@ describe "Pledge.pledge" do
 
   it "should allow dns lookups if dns is used" do
     with_lib('socket') do
-      unpledged("Socket.gethostbyname('google.com')")
-      pledged("Socket.gethostbyname('google.com')", "dns")
+      unpledged("Addrinfo.getaddrinfo('google.com', nil)")
+      pledged("Addrinfo.getaddrinfo('google.com', nil)", "dns")
     end
   end
 
