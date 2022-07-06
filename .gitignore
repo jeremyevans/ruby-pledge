@@ -1,3 +1,5 @@
 /pledge-*.gem
 /lib/pledge.so
 /tmp
+/coverage
+/spec/[0-9]*_test.rb

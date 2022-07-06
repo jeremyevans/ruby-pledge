@@ -1,7 +1,6 @@
-require "rake"
 require "rake/clean"
 
-CLEAN.include %w'**.rbc rdoc lib/*.so tmp'
+CLEAN.include %w'lib/*.so tmp coverage'
 
 desc "Build the gem"
 task :package do
@@ -16,6 +15,14 @@ end
 
 desc "Run specs"
 task :default => :spec
+
+desc "Run specs with coverage"
+task :spec_cov => [:compile] do
+  ruby = ENV['RUBY'] ||= FileUtils::RUBY 
+  ENV['COVERAGE'] = '1'
+  FileUtils.rm_r('coverage')
+  sh %{#{ruby} spec/unveil_spec.rb}
+end
 
 begin
   require 'rake/extensiontask'

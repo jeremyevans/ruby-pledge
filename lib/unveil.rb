@@ -1,7 +1,9 @@
 # frozen-string-literal: true
 
-require 'pledge'
+require_relative 'pledge'
+# :nocov:
 raise LoadError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+# :nocov:
 
 module Pledge
   # Limit access to the file system using unveil(2).  +paths+ should be a hash
