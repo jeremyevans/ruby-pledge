@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.author = "Jeremy Evans"
   s.email = "code@jeremyevans.net"
   s.homepage = "https://github.com/jeremyevans/ruby-pledge"
-  s.required_ruby_version = ">= 1.8.7"
+  s.required_ruby_version = ">= 1.9.2"
   s.files = %w(MIT-LICENSE CHANGELOG README.rdoc Rakefile ext/pledge/extconf.rb ext/pledge/pledge.c spec/pledge_spec.rb lib/unveil.rb)
   s.license = 'MIT'
   s.extensions << 'ext/pledge/extconf.rb'
