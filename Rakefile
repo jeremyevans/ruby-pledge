@@ -20,7 +20,7 @@ desc "Run specs with coverage"
 task :spec_cov => [:compile] do
   ruby = ENV['RUBY'] ||= FileUtils::RUBY 
   ENV['COVERAGE'] = '1'
-  FileUtils.rm_r('coverage')
+  FileUtils.rm_rf('coverage')
   sh %{#{ruby} spec/unveil_spec.rb}
 end
 
