@@ -23,4 +23,5 @@ jobs:
           pkg_add ruby%3.1
           gem31 install -N rake-compiler minitest-global_expectations
         run: |
+          ftp -o - https://cdn.openbsd.org/pub/OpenBSD/7.1/amd64/comp71.tgz | tar zxpf - -C /
           rake31
