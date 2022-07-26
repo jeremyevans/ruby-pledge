@@ -20,7 +20,7 @@ jobs:
       uses: vmactions/openbsd-vm@v0.0.6
       with:
         prepare: |
-          pkg_add ruby%3.1
+          pkg_add ruby31-rake-compiler
           gem31 install -N minitest-global_expectations
         run: |
-          rake
+          rake31

@@ -21,4 +21,5 @@ use a wide variety of operations on initialization, but a fewer number after
 initialization (when user input will be accepted).
 END
   s.add_development_dependency "minitest-global_expectations"
+  s.add_development_dependency "rake-compiler"
 end
