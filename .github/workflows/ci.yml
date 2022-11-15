@@ -17,11 +17,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: OpenBSD Test
       id: test
-      uses: vmactions/openbsd-vm@v0.0.6
+      uses: vmactions/openbsd-vm@v0
       with:
         prepare: |
           pkg_add ruby%3.1
           gem31 install -N rake-compiler minitest-global_expectations
         run: |
-          ftp -o - https://cdn.openbsd.org/pub/OpenBSD/7.1/amd64/comp71.tgz | tar zxpf - -C /
+          ftp -o - https://cdn.openbsd.org/pub/OpenBSD/7.2/amd64/comp72.tgz | tar zxpf - -C /
           rake31
