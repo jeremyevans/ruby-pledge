@@ -13,6 +13,7 @@ static VALUE rb_pledge(int argc, VALUE* argv, VALUE pledge_class) {
   const char * prom = NULL;
   const char * execprom = NULL;
 
+#ifdef HAVE_PLEDGE
   rb_scan_args(argc, argv, "11", &promises, &execpromises);
 
   if (!NIL_P(promises)) {
@@ -41,6 +42,9 @@ static VALUE rb_pledge(int argc, VALUE* argv, VALUE pledge_class) {
         rb_raise(ePledgeError, "pledge error");
     }
   }
+#else
+  rb_raise(rb_eLoadError, "pledge not supported");
+#endif
 
   return Qnil;
 }

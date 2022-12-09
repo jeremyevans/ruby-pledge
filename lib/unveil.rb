@@ -1,9 +1,6 @@
 # frozen-string-literal: true
 
 require_relative 'pledge'
-# :nocov:
-raise LoadError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
-# :nocov:
 
 module Pledge
   # Limit access to the file system using unveil(2).  +paths+ should be a hash
@@ -25,6 +22,8 @@ module Pledge
   # which denies all access to the file system if +unveil_without_lock+
   # was not called previously.
   def unveil(paths)
+    raise LoadError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+
     if paths.empty?
       paths = {'/'=>''}
     end
@@ -35,6 +34,8 @@ module Pledge
 
   # Same as unveil, but allows for future calls to unveil or unveil_without_lock.
   def unveil_without_lock(paths)
+    raise LoadError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+
     paths = Hash[paths]
 
     paths.to_a.each do |path, perm|
