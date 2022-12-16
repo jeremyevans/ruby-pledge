@@ -43,7 +43,7 @@ static VALUE rb_pledge(int argc, VALUE* argv, VALUE pledge_class) {
     }
   }
 #else
-  rb_raise(rb_eLoadError, "pledge not supported");
+  rb_raise(rb_eNotImpError, "pledge not supported");
 #endif
 
   return Qnil;

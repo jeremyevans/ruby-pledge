@@ -1,3 +1,7 @@
+=== master
+
+* Allow installation on platforms not supporting pledge, raising NotImplementedError when calling pledge/unveil methods in that case (jcs) (#3)
+
 === 1.2.0 (2019-07-07)
 
 * Add unveil library and Pledge.unveil for access to unveil(2) to control file system access (jeremyevans)

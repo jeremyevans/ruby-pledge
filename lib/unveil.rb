@@ -22,7 +22,9 @@ module Pledge
   # which denies all access to the file system if +unveil_without_lock+
   # was not called previously.
   def unveil(paths)
-    raise LoadError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+    # :nocov:
+    raise NotImplementedError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+    # :nocov:
 
     if paths.empty?
       paths = {'/'=>''}
@@ -34,7 +36,9 @@ module Pledge
 
   # Same as unveil, but allows for future calls to unveil or unveil_without_lock.
   def unveil_without_lock(paths)
-    raise LoadError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+    # :nocov:
+    raise NotImplementedError, "unveil not supported" unless Pledge.respond_to?(:_unveil, true)
+    # :nocov:
 
     paths = Hash[paths]
 
