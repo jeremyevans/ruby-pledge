@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-12
     name: 3.1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: OpenBSD Test
       id: test
       uses: vmactions/openbsd-vm@v0
