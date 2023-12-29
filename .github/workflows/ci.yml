@@ -11,17 +11,18 @@ permissions:
 
 jobs:
   test:
-    runs-on: macos-12
-    name: 3.1
+    runs-on: ubuntu-latest
+    name: 3.2
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: OpenBSD Test
       id: test
-      uses: vmactions/openbsd-vm@v0
+      uses: vmactions/openbsd-vm@v1
       with:
+        release: 7.4
         prepare: |
-          pkg_add ruby%3.1
-          gem31 install -N rake-compiler minitest-global_expectations
+          pkg_add ruby%3.2
+          gem32 install -N rake-compiler minitest-global_expectations
         run: |
-          ftp -o - https://cdn.openbsd.org/pub/OpenBSD/7.2/amd64/comp72.tgz | tar zxpf - -C /
-          rake31
+          ftp -o - https://cdn.openbsd.org/pub/OpenBSD/7.4/amd64/comp74.tgz | tar zxpf - -C /
+          rake32
