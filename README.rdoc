@@ -103,7 +103,7 @@ Example:
     'rack' => :gem
   )
 
-The value of :gem is mostly mostly needed if the gem uses autoload or
+The value of :gem is mostly needed if the gem uses autoload or
 other forms of runtime requires.  This allows read access to
 all files in the gem's folder, not just the gem's require paths,
 so it works correctly for gems that access data (e.g. templates)
