@@ -10,7 +10,7 @@ end
 desc "Run specs"
 task :spec => :compile do
   ruby = ENV['RUBY'] ||= FileUtils::RUBY 
-  sh %{#{ruby} #{"-w" if RUBY_VERSION >= '3'} spec/pledge_spec.rb}
+  sh %{#{ruby} #{"-w" if RUBY_VERSION >= '3'} #{'-W:strict_unused_block' if RUBY_VERSION >= '3.4'} spec/pledge_spec.rb}
 end
 
 desc "Run specs"
