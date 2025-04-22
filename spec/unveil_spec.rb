@@ -39,7 +39,7 @@ END
 
   def run_unveil(code)
 print '.'
-    system(RUBY, '-e', unveil_code(code))
+    system(RUBY, '--disable-gems', '-e', unveil_code(code))
   end
 
   test_file = "spec/#{$$}_test.rb"

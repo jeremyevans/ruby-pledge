@@ -2,11 +2,11 @@ require_relative 'unveil_spec'
 
 describe "Pledge.pledge" do
   def execpledged(promises, execpromises, code)
-    system(RUBY, '-I', 'lib', '-r', 'pledge', '-e', "Pledge.pledge(#{promises.inspect}, #{execpromises.inspect}); #{code}")
+    system(RUBY, '--disable-gems', '-I', 'lib', '-r', 'pledge', '-e', "Pledge.pledge(#{promises.inspect}, #{execpromises.inspect}); #{code}")
   end
 
   def _pledged(status, promises, code)
-    system(RUBY, '-I', 'lib', '-r', 'pledge', '-e', "Pledge.pledge(#{promises.inspect}); #{code}").must_equal status
+    system(RUBY, '--disable-gems', '-I', 'lib', '-r', 'pledge', '-e', "Pledge.pledge(#{promises.inspect}); #{code}").must_equal status
   end
 
   def pledged(code, promises="")
@@ -17,9 +17,9 @@ describe "Pledge.pledge" do
     _pledged(false, promises, code)
   end
 
-  def with_lib(lib)
+  def with_lib(*libs)
     rubyopt = ENV['RUBYOPT']
-    ENV['RUBYOPT'] = "#{rubyopt} -r#{lib}"
+    ENV['RUBYOPT'] = "#{rubyopt} #{libs.map{|lib| "-r#{lib}"}.join(' ')}"
     yield
   ensure
     ENV['RUBYOPT'] = rubyopt
@@ -72,7 +72,7 @@ describe "Pledge.pledge" do
   end
 
   it "should allow internet access if inet is used" do
-    with_lib('net/http') do
+    with_lib('rubygems', 'net/http') do
       unpledged("Net::HTTP.get('127.0.0.1', '/index.html') rescue nil")
       promises = "inet"
       # rpath necessary on ruby < 2.1, as it calls stat
