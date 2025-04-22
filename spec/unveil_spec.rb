@@ -3,13 +3,14 @@ if ENV.delete('COVERAGE')
   require_relative 'coverage_helper'
 end
 
+require 'rbconfig'
 require_relative '../lib/pledge'
 
 ENV['MT_NO_PLUGINS'] = '1' # Work around stupid autoloading of plugins
 gem 'minitest'
 require 'minitest/global_expectations/autorun'
 
-RUBY = ENV['RUBY'] || 'ruby'
+RUBY = RbConfig.ruby
 
 describe "Pledge.unveil" do
   if ENV['COVERAGE']
