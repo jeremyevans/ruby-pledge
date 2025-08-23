@@ -37,9 +37,16 @@ END
     run_unveil(unveil_code("Pledge.unveil(#{unveils.inspect}); #{code}"))
   end
 
-  def run_unveil(code)
-print '.'
-    system(RUBY, '--disable-gems', '-e', unveil_code(code))
+  if ENV['COVERAGE']
+    def run_unveil(code)
+      print '.'
+      system(RUBY, '-e', unveil_code(code))
+    end
+  else
+    def run_unveil(code)
+      print '.'
+      system(RUBY, '--disable-gems', '-e', unveil_code(code))
+    end
   end
 
   test_file = "spec/#{$$}_test.rb"
