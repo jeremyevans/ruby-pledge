@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     name: 3.3
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: OpenBSD Test
       id: test
       uses: vmactions/openbsd-vm@v1
