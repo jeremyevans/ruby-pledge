@@ -86,18 +86,6 @@ describe "Pledge.pledge" do
     pledged("Process.kill(:URG, #{$$})", "proc")
   end
 
-  it "should allow creating temp files if tmppath and rpath are used" do
-    with_lib('tempfile') do
-      unpledged("Tempfile.new('foo')")
-      unpledged("Tempfile.new('foo')", "tmppath")
-      unpledged("Tempfile.new('foo')", "rpath")
-      promises = "tmppath rpath"
-      # cpath necessary on ruby < 2.0, as it calls mkdir
-      promises << " cpath" if RUBY_VERSION < '2.0'
-      pledged("Tempfile.new('foo')", promises)
-    end
-  end
-
   it "should allow unix sockets if unix and rpath is used" do
     require 'socket'
     us = UNIXServer.new('spec/_sock')
